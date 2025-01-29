@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import Calendar from "react-calendar"; // Install using `npm install react-calendar`
 import "react-calendar/dist/Calendar.css"; // Import default styles for react-calendar
-import "../../assets/css/custom-calendar.css"; // Ensure correct import path
 import BookingConfirmation from "./BookingConfirmation";
 
 const ScheduleClass: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  const [showOverlay, setShowOverlay] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false); // State to manage overlay visibility
 
   const handleTimeSelect = (time: string) => {
     setSelectedTime(time);
@@ -15,24 +14,25 @@ const ScheduleClass: React.FC = () => {
 
   const handleConfirm = () => {
     if (selectedDate && selectedTime) {
-      setShowOverlay(true);
+      setShowOverlay(true); // Show overlay when schedule is confirmed
     } else {
       alert("Please select a date and time");
     }
   };
 
   const handleCloseOverlay = () => {
-    setShowOverlay(false);
+    setShowOverlay(false); // Close overlay when needed
   };
 
   const bookingDetails = {
     subject: "Mathematics",
-    date: selectedDate ? selectedDate.toDateString() : "Not selected",
-    time: selectedTime || "Not selected",
+    date: selectedDate ? selectedDate.toDateString() : "Not Selected",
+    time: selectedTime || "Not Selected",
   };
 
   return (
     <div className="w-full flex flex-col items-center justify-center min-h-screen bg-gray-100 text-gray-800 relative">
+      {/* Header */}
       <h1 className="text-4xl max-md:text-xl font-bold mb-2 max-md:mb-0 text-center">
         Schedule Your FREE Class
       </h1>
@@ -40,15 +40,23 @@ const ScheduleClass: React.FC = () => {
         Pick a date and time that works for you
       </p>
 
-      <div className="items-start w-full lg:w-3/4 max-md:w-full gap-8 bg-white rounded-lg p-8 max-md:p-2 shadow-lg">
+      {/* Scheduling Section */}
+      <div className="w-full lg:w-3/4 max-md:w-full bg-white rounded-lg p-8 max-md:p-2 shadow-lg">
         <div className="flex flex-col max-md:flex-col">
           <div className="flex flex-row max-md:flex-col max-md:space-y-5">
+            {/* Date Picker */}
             <div className="flex-1">
               <h2 className="flex items-center text-lg font-medium mb-4 max-md:mb-2">
                 <span className="mr-2">📅</span> Select a date
               </h2>
               <Calendar
-                onChange={(value) => setSelectedDate(value as Date)}
+                onChange={(value) => {
+                  if (value instanceof Date) {
+                    setSelectedDate(value);
+                  } else {
+                    console.error("Invalid date selection:", value);
+                  }
+                }}
                 value={selectedDate}
                 className="react-calendar w-full max-w-full"
               />
@@ -59,6 +67,7 @@ const ScheduleClass: React.FC = () => {
               )}
             </div>
 
+            {/* Time Picker */}
             <div className="flex-1 w-full">
               <h2 className="flex items-center justify-center text-lg font-medium mb-4">
                 <span className="mr-2">⏰</span> Select a time
@@ -89,6 +98,7 @@ const ScheduleClass: React.FC = () => {
             </div>
           </div>
 
+          {/* Confirm Button */}
           <button
             onClick={handleConfirm}
             className={`mt-8 py-4 max-md:py-2 px-12 w-fit max-md:-mt-0 mx-auto rounded-full font-medium text-white ${
@@ -103,9 +113,10 @@ const ScheduleClass: React.FC = () => {
         </div>
       </div>
 
+      {/* Overlay for Booking Confirmation */}
       {showOverlay && (
         <div className="fixed max-md:w-full inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="rounded-lg p-8 relative lg:w-3/4 max-w-lg max-md:mx-auto bg-white shadow-xl">
+          <div className="bg-white rounded-lg p-8 relative lg:w-3/4 max-w-lg max-md:mx-auto">
             <button
               onClick={handleCloseOverlay}
               className="absolute top-4 right-4 z-40 text-xl text-black hover:text-gray-700"
